@@ -23,21 +23,21 @@ const CommunityPage: NextPage<CommunityPageProps> = ({ communityData }) => {
   const [communityStateValue, setCommunityStateValue] =
     useRecoilState(communityState);
 
-  // useEffect(() => {
-  //   // First time the user has navigated to this community page during session - add to cache
-  //   const firstSessionVisit =
-  //     !communityStateValue.visitedCommunities[communityData.id!];
+  useEffect(() => {
+    // First time the user has navigated to this community page during session - add to cache
+    const firstSessionVisit =
+      !communityStateValue.visitedCommunities[communityData.id!];
 
-  //   if (firstSessionVisit) {
-  //     setCommunityStateValue((prev) => ({
-  //       ...prev,
-  //       visitedCommunities: {
-  //         ...prev.visitedCommunities,
-  //         [communityData.id!]: communityData,
-  //       },
-  //     }));
-  //   }
-  // }, [communityData]);
+    if (firstSessionVisit) {
+      setCommunityStateValue((prev) => ({
+        ...prev,
+        visitedCommunities: {
+          ...prev.visitedCommunities,
+          [communityData.id!]: communityData,
+        },
+      }));
+    }
+  }, [communityData]);
 
   useEffect(() => {
     setCommunityStateValue((prev) => ({
@@ -46,56 +46,56 @@ const CommunityPage: NextPage<CommunityPageProps> = ({ communityData }) => {
     }));
   }, [communityData]);
 
-  // Community was not found in the database
-  if (!communityData) {
-    return <CommunityNotFound />;
-  }
+   // Community was not found in the database
+   if (!communityData) {
+     return <CommunityNotFound />;
+   }
 
-  return (
-    <>
-      <Header communityData={communityData} />
-      <PageContentLayout>
-        {/* Left Content */}
-        <>
-          <CreatePostLink />
-          <Posts
-            communityData={communityData}
-            userId={user?.uid}
-            loadingUser={loadingUser}
-          />
-        </>
-        {/* Right Content */}
-        <>
-          <About communityData={communityData} />
-        </>
-      </PageContentLayout>
-    </>
-  );
-};
+   return (
+     <>
+       <Header communityData={communityData} />
+       <PageContentLayout>
+         {/* Left Content */}
+         <>
+           <CreatePostLink />
+           <Posts
+             communityData={communityData}
+             userId={user?.uid}
+             loadingUser={loadingUser}
+           />
+         </>
+         {/* Right Content */}
+         <>
+           <About communityData={communityData} />
+         </>
+       </PageContentLayout>
+     </>
+   );
+ };
 
-export default CommunityPage;
+ export default CommunityPage;
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  console.log("GET SERVER SIDE PROPS RUNNING");
+ export async function getServerSideProps(context: GetServerSidePropsContext) {
+   console.log("GET SERVER SIDE PROPS RUNNING");
 
-  try {
-    const communityDocRef = doc(
-      firestore,
-      "communities",
-      context.query.community as string
-    );
-    const communityDoc = await getDoc(communityDocRef);
-    return {
-      props: {
-        communityData: communityDoc.exists()
-          ? JSON.parse(
-              safeJsonStringify({ id: communityDoc.id, ...communityDoc.data() }) // needed for dates
-            )
-          : "",
-      },
-    };
-  } catch (error) {
-    // Could create error page here
-    console.log("getServerSideProps error - [community]", error);
-  }
-}
+   try {
+     const communityDocRef = doc(
+       firestore,
+       "communities",
+       context.query.community as string
+     );
+     const communityDoc = await getDoc(communityDocRef);
+     return {
+       props: {
+         communityData: communityDoc.exists()
+           ? JSON.parse(
+               safeJsonStringify({ id: communityDoc.id, ...communityDoc.data() }) // needed for dates
+             )
+           : "",
+        },
+     };
+   } catch (error) {
+     // Could create error page here
+     console.log("getServerSideProps error - [community]", error);
+   }
+ }

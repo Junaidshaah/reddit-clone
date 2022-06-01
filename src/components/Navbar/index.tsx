@@ -7,7 +7,7 @@ import {
   defaultMenuItem,
   directoryMenuState,
 } from "../../atoms/directoryMenuAtom";
-import { auth } from "../../firebase/clientApp";
+import {auth}  from "../../firebase/clientApp";
 import Directory from "./Directory";
 import RightContent from "./RightContent";
 import SearchInput from "./SearchInput";
